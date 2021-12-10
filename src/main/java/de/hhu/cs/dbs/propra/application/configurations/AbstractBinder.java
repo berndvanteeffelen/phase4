@@ -14,29 +14,29 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class AbstractBinder extends org.glassfish.hk2.utilities.binding.AbstractBinder {
-    @Override
-    protected void configure() {
-        bind(getDataSource()).to(DataSource.class);
-        bind(SQLiteUserRepository.class).to(UserRepository.class);
-        bindAsContract(BasicHTTPAuthenticationService.class);
-        bindAsContract(CustomAuthorizationService.class);
-    }
+	@Override
+	protected void configure() {
+		bind(getDataSource()).to(DataSource.class);
+		bind(SQLiteUserRepository.class).to(UserRepository.class);
+		bindAsContract(BasicHTTPAuthenticationService.class);
+		bindAsContract(CustomAuthorizationService.class);
+	}
 
-    private SQLiteDataSource getDataSource() {
-        Properties properties = new Properties();
-        properties.put("auto_vacuum", "full");
-        SQLiteConfig config = new SQLiteConfig(properties);
-        config.setEncoding(SQLiteConfig.Encoding.UTF8);
-        config.enforceForeignKeys(true);
-        config.setJournalMode(SQLiteConfig.JournalMode.WAL);
-        config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
-        SQLiteDataSource dataSource = new SQLiteDataSource(config);
-        try {
-            dataSource.setLogWriter(new PrintWriter(System.out));
-        } catch (SQLException exception) {
-            System.err.println(exception.getMessage());
-        }
-        dataSource.setUrl("jdbc:sqlite:data" + File.separator + "database.db");
-        return dataSource;
-    }
+	private SQLiteDataSource getDataSource() {
+		Properties properties = new Properties();
+		properties.put("auto_vacuum", "full");
+		SQLiteConfig config = new SQLiteConfig(properties);
+		config.setEncoding(SQLiteConfig.Encoding.UTF8);
+		config.enforceForeignKeys(true);
+		config.setJournalMode(SQLiteConfig.JournalMode.WAL);
+		config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
+		SQLiteDataSource dataSource = new SQLiteDataSource(config);
+		try {
+			dataSource.setLogWriter(new PrintWriter(System.out));
+		} catch (SQLException exception) {
+			System.err.println(exception.getMessage());
+		}
+		dataSource.setUrl("jdbc:sqlite:data" + File.separator + "database.db");
+		return dataSource;
+	}
 }

@@ -1,0 +1,30 @@
+SELECT * FROM KUENSTLER
+WHERE Mail IN
+  (SELECT Mail FROM
+    (SELECT Mail,count(Mail) as m FROM(
+      SELECT *,count(TID) as c FROM VEROEFFENTLICHT
+      GROUP BY TID)
+    WHERE c=1)
+  WHERE m=3);
+
+SELECT * FROM PLAYLIST
+WHERE PID=(
+  SELECT PID FROM(
+    SELECT PID,AVG(Punkte) as Score FROM BEWERTET
+    GROUP BY PID
+    ORDER BY Score DESC
+  )
+  WHERE Score ==
+    (SELECT MAX(Score) FROM (
+      SELECT PID,AVG(Punkte) as Score FROM BEWERTET
+      GROUP BY PID
+      ORDER BY Score DESC
+      )
+    )
+);
+
+SELECT * FROM NUTZER
+WHERE Mail NOT IN(
+  SELECT Mail FROM ERSTELLT
+)
+ORDER BY Benutzername;

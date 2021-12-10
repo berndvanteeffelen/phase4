@@ -26,47 +26,47 @@ import java.util.Set;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class SecurityFilter implements ContainerRequestFilter {
-    @Context
-    private ResourceInfo resourceInfo;
-    @Inject
-    private UserRepository userRepository;
-    @Inject
-    private BasicHTTPAuthenticationService authenticationService;
-    @Inject
-    private CustomAuthorizationService authorizationService;
+	@Context
+	private ResourceInfo resourceInfo;
+	@Inject
+	private UserRepository userRepository;
+	@Inject
+	private BasicHTTPAuthenticationService authenticationService;
+	@Inject
+	private CustomAuthorizationService authorizationService;
 
-    @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        SecurityContext securityContext = new SecurityContext();
-        requestContext.setSecurityContext(securityContext);
+	@Override
+	public void filter(ContainerRequestContext requestContext) throws IOException {
+		SecurityContext securityContext = new SecurityContext();
+		requestContext.setSecurityContext(securityContext);
 
-        final AnnotatedMethod annotatedMethod = new AnnotatedMethod(resourceInfo.getResourceMethod());
-        if (annotatedMethod.isAnnotationPresent(DenyAll.class)) throw new ForbiddenException("Forbidden");
-        if (!annotatedMethod.isAnnotationPresent(RolesAllowed.class)) return;
+		final AnnotatedMethod annotatedMethod = new AnnotatedMethod(resourceInfo.getResourceMethod());
+		if (annotatedMethod.isAnnotationPresent(DenyAll.class)) throw new ForbiddenException("Forbidden");
+		if (!annotatedMethod.isAnnotationPresent(RolesAllowed.class)) return;
 
-        RolesAllowed annotation = annotatedMethod.getAnnotation(RolesAllowed.class);
-        Set<Role> rolesAllowed = getRolesAllowedFromAnnotation(annotation);
+		RolesAllowed annotation = annotatedMethod.getAnnotation(RolesAllowed.class);
+		Set<Role> rolesAllowed = getRolesAllowedFromAnnotation(annotation);
 
-        final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (!authenticationService.validateHeader(authorizationHeader))
-            throw new NotAuthorizedException(authenticationService.getWWWAuthenticateHeader());
-        String base64EncodedCredentials = authorizationHeader.substring("Basic ".length());
+		final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		if (!authenticationService.validateHeader(authorizationHeader))
+			throw new NotAuthorizedException(authenticationService.getWWWAuthenticateHeader());
+		String base64EncodedCredentials = authorizationHeader.substring("Basic ".length());
 
-        final String name = authenticationService.getNameFromEncodedCredentials(base64EncodedCredentials);
-        final String password = authenticationService.getPasswordFromEncodedCredentials(base64EncodedCredentials);
-        if (!authenticationService.authenticate(name, password))
-            throw new NotAuthorizedException(authenticationService.getWWWAuthenticateHeader());
+		final String name = authenticationService.getNameFromEncodedCredentials(base64EncodedCredentials);
+		final String password = authenticationService.getPasswordFromEncodedCredentials(base64EncodedCredentials);
+		if (!authenticationService.authenticate(name, password))
+			throw new NotAuthorizedException(authenticationService.getWWWAuthenticateHeader());
 
-        securityContext.setUser(userRepository.findByName(name).orElse(null));
+		securityContext.setUser(userRepository.findByName(name).orElse(null));
 
-        if (!authorizationService.authorise(name, rolesAllowed)) throw new ForbiddenException("Forbidden");
-    }
+		if (!authorizationService.authorise(name, rolesAllowed)) throw new ForbiddenException("Forbidden");
+	}
 
-    private Set<Role> getRolesAllowedFromAnnotation(RolesAllowed annotation) {
-        Set<Role> rolesAllowed = new HashSet<>();
-        for (String value : annotation.value()) {
-            rolesAllowed.add(Role.valueOf(value));
-        }
-        return rolesAllowed;
-    }
+	private Set<Role> getRolesAllowedFromAnnotation(RolesAllowed annotation) {
+		Set<Role> rolesAllowed = new HashSet<>();
+		for (String value : annotation.value()) {
+			rolesAllowed.add(Role.valueOf(value));
+		}
+		return rolesAllowed;
+	}
 }
