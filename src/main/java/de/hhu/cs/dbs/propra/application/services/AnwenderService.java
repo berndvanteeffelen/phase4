@@ -336,9 +336,11 @@ public class AnwenderService {
 	}
 
 	public Response addNutzer(String mail, String passwort, String name){
+		Connection connection = null;
+		Response r;
 		try{
 			String query = "INSERT INTO NUTZER VALUES(?,?,?,NULL)";
-			Connection connection = dataSource.getConnection();
+			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(2,mail);
@@ -349,21 +351,34 @@ public class AnwenderService {
 			connection.commit();
 			connection.setAutoCommit(true);
 			connection.close();
-			return Response.status(Response.Status.CREATED).header("Location","nutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+			r = Response.status(Response.Status.CREATED).header("Location","nutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
 		}
 		catch (Exception e){
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
 			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
-			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
+		if(connection!=null) {
+			try{
+				connection.close();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				Map<String, Object> entity = new HashMap<>();
+				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			}
+		}
+		return r;
 	}
 
 	public Response addPremiumnutzer(String datum,String mail, String passwort, String name){
 		addNutzer(mail,passwort,name);
+		Connection connection = null;
+		Response r;
 		try{
 			String query = "INSERT INTO PREMIUMNUTZER VALUES(?,?)";
-			Connection connection = dataSource.getConnection();
+			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(2,mail);
@@ -373,22 +388,34 @@ public class AnwenderService {
 			connection.commit();
 			connection.setAutoCommit(true);
 			connection.close();
-			return Response.status(Response.Status.CREATED).header("Location","premiumnutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+			r = Response.status(Response.Status.CREATED).header("Location","premiumnutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
 		}
 		catch (Exception e){
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
 			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
-			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
+		if(connection!=null) {
+			try{
+				connection.close();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				Map<String, Object> entity = new HashMap<>();
+				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			}
+		}
+		return r;
 	}
 
 	public Response addKuenstler(String kuenstlername,String datum,String mail, String passwort, String name){
-		addNutzer(mail,passwort,name);
 		addPremiumnutzer(datum,mail,passwort,name);
+		Response r;
+		Connection connection=null;
 		try{
 			String query = "INSERT INTO KUENSTLER VALUES(?,?)";
-			Connection connection = dataSource.getConnection();
+			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(2,mail);
@@ -398,13 +425,23 @@ public class AnwenderService {
 			connection.commit();
 			connection.setAutoCommit(true);
 			connection.close();
-			return Response.status(Response.Status.CREATED).header("Location","kuenstler/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+			r = Response.status(Response.Status.CREATED).header("Location","kuenstler/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
 		}
 		catch (Exception e){
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
-			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
-			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
+		if(connection!=null) {
+			try{
+				connection.close();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				Map<String, Object> entity = new HashMap<>();
+				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			}
+		}
+		return r;
 	}
 }
