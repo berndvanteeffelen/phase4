@@ -1,6 +1,7 @@
 package de.hhu.cs.dbs.propra.presentation.rest;
 
 import de.hhu.cs.dbs.propra.application.services.AnwenderService;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -81,5 +82,26 @@ public class AnwenderController {
 	public Response getKommentare(@PathParam("titelid")int titelId){
 		AnwenderService anwenderService = new AnwenderService(dataSource);
 		return anwenderService.getKommentare(titelId);
+	}
+
+	@Path("/nutzer")
+	@POST
+	public Response addNutzer(@FormDataParam("email") String mail,@FormDataParam("passwort")String passwort,@FormDataParam("benutzername")String name){
+		AnwenderService anwenderService = new AnwenderService(dataSource);
+		return anwenderService.addNutzer(mail,passwort,name);
+	}
+
+	@Path("/premiumnutzer")
+	@POST
+	public Response addPremiumnutzer(@FormDataParam("ablaufdatum")String datum,@FormDataParam("email") String mail,@FormDataParam("passwort")String passwort,@FormDataParam("benutzername")String name){
+		AnwenderService anwenderService = new AnwenderService(dataSource);
+		return anwenderService.addPremiumnutzer(datum,mail,passwort,name);
+	}
+
+	@Path("/kuenstler")
+	@POST
+	public Response addKuenstler(@FormDataParam("kuenstlername")String kuenstlername,@FormDataParam("ablaufdatum")String datum,@FormDataParam("email") String mail,@FormDataParam("passwort")String passwort,@FormDataParam("benutzername")String name){
+		AnwenderService anwenderService = new AnwenderService(dataSource);
+		return anwenderService.addKuenstler(kuenstlername,datum,mail,passwort,name);
 	}
 }

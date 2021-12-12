@@ -2,11 +2,10 @@ package de.hhu.cs.dbs.propra.application.services;
 
 import javax.sql.DataSource;
 import javax.ws.rs.core.Response;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.Date;
 
 public class AnwenderService {
 	private DataSource dataSource;
@@ -332,6 +331,79 @@ public class AnwenderService {
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
 			entity.put("message", "Keine Ergebnisse gefunden" + e.getLocalizedMessage());
+			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+	}
+
+	public Response addNutzer(String mail, String passwort, String name){
+		try{
+			String query = "INSERT INTO NUTZER VALUES(?,?,?,NULL)";
+			Connection connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(2,mail);
+			preparedStatement.setString(3,passwort);
+			preparedStatement.setString(1,name);
+			preparedStatement.executeUpdate();
+			Long id = preparedStatement.getGeneratedKeys().getLong(1);
+			connection.commit();
+			connection.setAutoCommit(true);
+			connection.close();
+			return Response.status(Response.Status.CREATED).header("Location","nutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
+			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+	}
+
+	public Response addPremiumnutzer(String datum,String mail, String passwort, String name){
+		addNutzer(mail,passwort,name);
+		try{
+			String query = "INSERT INTO PREMIUMNUTZER VALUES(?,?)";
+			Connection connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(2,mail);
+			preparedStatement.setString(1,datum);
+			preparedStatement.executeUpdate();
+			Long id = preparedStatement.getGeneratedKeys().getLong(1);
+			connection.commit();
+			connection.setAutoCommit(true);
+			connection.close();
+			return Response.status(Response.Status.CREATED).header("Location","premiumnutzer/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
+			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+	}
+
+	public Response addKuenstler(String kuenstlername,String datum,String mail, String passwort, String name){
+		addNutzer(mail,passwort,name);
+		addPremiumnutzer(datum,mail,passwort,name);
+		try{
+			String query = "INSERT INTO KUENSTLER VALUES(?,?)";
+			Connection connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(2,mail);
+			preparedStatement.setString(1,kuenstlername);
+			preparedStatement.executeUpdate();
+			Long id = preparedStatement.getGeneratedKeys().getLong(1);
+			connection.commit();
+			connection.setAutoCommit(true);
+			connection.close();
+			return Response.status(Response.Status.CREATED).header("Location","kuenstler/" + URLEncoder.encode(String.valueOf(id), StandardCharsets.UTF_8)).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
 			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
 	}
