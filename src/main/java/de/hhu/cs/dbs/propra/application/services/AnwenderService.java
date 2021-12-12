@@ -366,6 +366,7 @@ public class AnwenderService {
 			catch (Exception e){
 				e.printStackTrace();
 				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
 				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 			}
 		}
@@ -403,6 +404,7 @@ public class AnwenderService {
 			catch (Exception e){
 				e.printStackTrace();
 				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
 				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 			}
 		}
@@ -430,6 +432,7 @@ public class AnwenderService {
 		catch (Exception e){
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
 			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
 		if(connection!=null) {
@@ -439,6 +442,7 @@ public class AnwenderService {
 			catch (Exception e){
 				e.printStackTrace();
 				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Erstellung fehlgeschlagen" + e.getLocalizedMessage());
 				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 			}
 		}
