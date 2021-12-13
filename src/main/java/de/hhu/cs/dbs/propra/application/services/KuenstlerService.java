@@ -1,6 +1,7 @@
 package de.hhu.cs.dbs.propra.application.services;
 
 import javax.sql.DataSource;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -247,6 +248,8 @@ public class KuenstlerService {
 		Response r;
 		Connection connection=null;
 		try{
+			deleteFromProduziert(bandid);
+			deleteFromGehoertZu(bandid);
 			String query = "DELETE FROM BAND WHERE ROWID=?";
 			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
@@ -257,12 +260,12 @@ public class KuenstlerService {
 			connection.commit();
 			connection.setAutoCommit(true);
 			connection.close();
-			r = Response.status(Response.Status.NO_CONTENT).header("Location","bands/").build();
+			r = Response.status(Response.Status.NO_CONTENT).build();
 		}
 		catch (Exception e){
 			e.printStackTrace();
 			Map<String, Object> entity = new HashMap<>();
-			entity.put("message", "Löschen fehlgeschlagen" + e.getLocalizedMessage());
+			entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
 			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 		}
 		if(connection!=null) {
@@ -272,7 +275,79 @@ public class KuenstlerService {
 			catch (Exception e){
 				e.printStackTrace();
 				Map<String, Object> entity = new HashMap<>();
-				entity.put("message", "Löschen fehlgeschlagen" + e.getLocalizedMessage());
+				entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
+				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			}
+		}
+		return r;
+	}
+
+	public Response deleteFromProduziert(String bandid){
+		Response r;
+		Connection connection=null;
+		try{
+			String query = "DELETE FROM PRODUZIERT WHERE BID=?";
+			connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1,Integer.parseInt(bandid));
+			preparedStatement.executeUpdate();
+			Long id = preparedStatement.getGeneratedKeys().getLong(1);
+			connection.commit();
+			connection.setAutoCommit(true);
+			connection.close();
+			r = Response.status(Response.Status.NO_CONTENT).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
+			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+		if(connection!=null) {
+			try{
+				connection.close();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
+				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+			}
+		}
+		return r;
+	}
+
+	public Response deleteFromGehoertZu(String bandid){
+		Response r;
+		Connection connection=null;
+		try{
+			String query = "DELETE FROM GEHOERT_ZU WHERE BID=?";
+			connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1,Integer.parseInt(bandid));
+			preparedStatement.executeUpdate();
+			Long id = preparedStatement.getGeneratedKeys().getLong(1);
+			connection.commit();
+			connection.setAutoCommit(true);
+			connection.close();
+			r = Response.status(Response.Status.NO_CONTENT).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> entity = new HashMap<>();
+			entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
+			r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+		if(connection!=null) {
+			try{
+				connection.close();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Loeschen fehlgeschlagen" + e.getLocalizedMessage());
 				r = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
 			}
 		}

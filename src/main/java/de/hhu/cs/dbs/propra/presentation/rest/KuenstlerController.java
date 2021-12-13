@@ -57,9 +57,9 @@ public class KuenstlerController {
 
 	@Path("/bands/{bandid}")
 	@RolesAllowed({"KUENSTLER"})
-	@POST
-	public Response deleteBand(@PathParam("bandid")String name){
+	@DELETE
+	public Response deleteBand(@PathParam("bandid")String bandid){
 		KuenstlerService kuenstlerService = new KuenstlerService(dataSource);
-		return kuenstlerService.deleteBand(name);
+		return kuenstlerService.deleteBand(bandid);
 	}
 }

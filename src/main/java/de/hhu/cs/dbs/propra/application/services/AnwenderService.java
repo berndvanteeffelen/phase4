@@ -23,6 +23,34 @@ public class AnwenderService {
 			for (int i = 1; i<=cC; i++){
 				cN.add(rsm.getColumnName(i).toUpperCase());
 			}
+			while (resultSet.next()){
+				Map<String, Object> map = new HashMap<>();
+				for (int i=1;i<=cC;i++) {
+					map.put(cN.get(i-1),resultSet.getString(i));
+				}
+				entity.add(map);
+			}
+			resultSet.close();
+			return Response.status(Response.Status.OK).entity(entity).build();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			Map<String, Object> err = new HashMap<>();
+			err.put("message","Keine Ergebnisse gefunden");
+			entity.add(err);
+			return Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+		}
+	}
+
+	private Response resultAsResponse(ResultSet resultSet, boolean vierNullVier){
+		List<Map> entity = new ArrayList<>();
+		try {
+			ResultSetMetaData rsm = resultSet.getMetaData();
+			int cC = rsm.getColumnCount();
+			List<String> cN = new ArrayList<>();
+			for (int i = 1; i<=cC; i++){
+				cN.add(rsm.getColumnName(i).toUpperCase());
+			}
 			do {
 				Map<String, Object> map = new HashMap<>();
 				for (int i=1;i<=cC;i++) {
@@ -332,7 +360,7 @@ public class AnwenderService {
 				return Response.status(Response.Status.NOT_FOUND).entity(entity).build();
 			}
 			else {
-				return resultAsResponse(resultSet);
+				return resultAsResponse(resultSet,true);
 			}
 		}
 		catch (Exception e){
