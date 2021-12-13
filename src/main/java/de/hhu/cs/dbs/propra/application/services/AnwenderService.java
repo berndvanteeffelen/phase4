@@ -23,13 +23,14 @@ public class AnwenderService {
 			for (int i = 1; i<=cC; i++){
 				cN.add(rsm.getColumnName(i).toUpperCase());
 			}
-			while (resultSet.next()){
+			do {
 				Map<String, Object> map = new HashMap<>();
 				for (int i=1;i<=cC;i++) {
 					map.put(cN.get(i-1),resultSet.getString(i));
 				}
 				entity.add(map);
 			}
+			while (resultSet.next());
 			resultSet.close();
 			return Response.status(Response.Status.OK).entity(entity).build();
 		}
@@ -325,7 +326,14 @@ public class AnwenderService {
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1,titelId);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			return resultAsResponse(resultSet);
+			if(!resultSet.next()){
+				Map<String, Object> entity = new HashMap<>();
+				entity.put("message", "Keine Ergebnisse gefunden");
+				return Response.status(Response.Status.NOT_FOUND).entity(entity).build();
+			}
+			else {
+				return resultAsResponse(resultSet);
+			}
 		}
 		catch (Exception e){
 			e.printStackTrace();

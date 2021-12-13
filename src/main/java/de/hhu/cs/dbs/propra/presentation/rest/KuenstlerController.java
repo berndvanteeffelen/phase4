@@ -54,4 +54,12 @@ public class KuenstlerController {
 		KuenstlerService kuenstlerService = new KuenstlerService(dataSource);
 		return kuenstlerService.addToBand(name,geschichte);
 	}
+
+	@Path("/bands/{bandid}")
+	@RolesAllowed({"KUENSTLER"})
+	@POST
+	public Response deleteBand(@PathParam("bandid")String name){
+		KuenstlerService kuenstlerService = new KuenstlerService(dataSource);
+		return kuenstlerService.deleteBand(name);
+	}
 }
