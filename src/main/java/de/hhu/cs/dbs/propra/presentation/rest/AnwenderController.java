@@ -23,9 +23,9 @@ public class AnwenderController {
 
 	@Path("/nutzer")
 	@GET
-	public Response getNutzer(@QueryParam("mail") String mail){
+	public Response getNutzer(@QueryParam("email") String email){
 		AnwenderService anwenderService = new AnwenderService(dataSource);
-		return anwenderService.getNutzer(mail);
+		return anwenderService.getNutzer(email);
 	}
 
 	@Path("/premiumnutzer")

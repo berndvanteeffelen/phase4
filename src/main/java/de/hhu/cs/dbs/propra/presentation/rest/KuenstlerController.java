@@ -1,6 +1,5 @@
 package de.hhu.cs.dbs.propra.presentation.rest;
 
-import de.hhu.cs.dbs.propra.application.services.AnwenderService;
 import de.hhu.cs.dbs.propra.application.services.KuenstlerService;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -34,7 +33,7 @@ public class KuenstlerController {
 	@Path("/titel")
 	@RolesAllowed({"KUENSTLER"})
 	@POST
-	public Response addTitel(@FormDataParam("bezeichnung")String bezeichnung, @FormDataParam("dauer")String dauer, @FormDataParam("speicherort_lq")String lq, @FormDataParam("speicherort_hq")String hq){
+	public Response addTitel(@FormDataParam("bezeichnung")String bezeichnung, @FormDataParam("dauer")int dauer, @FormDataParam("speicherort_lq")String lq, @FormDataParam("speicherort_hq")String hq){
 		KuenstlerService kuenstlerService = new KuenstlerService(dataSource);
 		return kuenstlerService.addTitel(bezeichnung,dauer,lq,hq,securityContext.getUserPrincipal().getName());
 	}

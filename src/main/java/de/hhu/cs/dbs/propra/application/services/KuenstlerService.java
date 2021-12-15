@@ -1,7 +1,6 @@
 package de.hhu.cs.dbs.propra.application.services;
 
 import javax.sql.DataSource;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class KuenstlerService {
 			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(2,erscheinungsjahr);
+			preparedStatement.setString(2,"01-01-"+erscheinungsjahr);
 			preparedStatement.setString(1,bezeichnung);
 			preparedStatement.executeUpdate();
 			Long id = preparedStatement.getGeneratedKeys().getLong(1);
@@ -93,16 +92,17 @@ public class KuenstlerService {
 		return r;
 	}
 
-	public Response addTitel(String bezeichnung, String dauer, String lq, String hq, String mail){
+	public Response addTitel(String bezeichnung, int dauer, String lq, String hq, String mail){
 		Response r;
 		Connection connection=null;
 		try{
+			String duration = String.format("%02d:%02d:%02d", dauer / 3600, (dauer % 3600) / 60, dauer % 60);
 			String query = "INSERT INTO TITEL(Benennung, Dauer, LQ, HQ) VALUES(?,?,?,?)";
 			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1,bezeichnung);
-			preparedStatement.setString(2,dauer);
+			preparedStatement.setString(2,duration);
 			preparedStatement.setString(3,lq);
 			preparedStatement.setString(4,hq);
 			preparedStatement.executeUpdate();
@@ -174,12 +174,20 @@ public class KuenstlerService {
 		Response r;
 		Connection connection=null;
 		try{
-			String query = "INSERT INTO BAND(Bandname, Geschichte) VALUES(?,?)";
+			String query;
+			if(geschichte.isEmpty()){
+				query = "INSERT INTO BAND(Bandname) VALUES(?)";
+			}
+			else{
+				query = "INSERT INTO BAND(Bandname, Geschichte) VALUES(?,?)";
+			}
 			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1,name);
-			preparedStatement.setString(2,geschichte);
+			if(!geschichte.isEmpty()) {
+				preparedStatement.setString(2, geschichte);
+			}
 			preparedStatement.executeUpdate();
 			Long id = preparedStatement.getGeneratedKeys().getLong(1);
 			connection.commit();

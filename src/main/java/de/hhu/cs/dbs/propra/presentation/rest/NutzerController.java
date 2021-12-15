@@ -1,7 +1,6 @@
 package de.hhu.cs.dbs.propra.presentation.rest;
 
 import de.hhu.cs.dbs.propra.application.services.NutzerService;
-import de.hhu.cs.dbs.propra.application.services.PremiumnutzerService;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;

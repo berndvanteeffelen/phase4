@@ -170,6 +170,6 @@ BEGIN
 END;
 /*
 .read data.sql
-.read queries.sql
+.read queries_korrigiert.sql
 .exit
 */

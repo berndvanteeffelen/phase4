@@ -42,7 +42,7 @@ public class AnwenderService {
 		}
 	}
 
-	private Response resultAsResponse(ResultSet resultSet, boolean vierNullVier){
+	private Response resultAsResponseVierNullVier(ResultSet resultSet){
 		List<Map> entity = new ArrayList<>();
 		try {
 			ResultSetMetaData rsm = resultSet.getMetaData();
@@ -125,7 +125,7 @@ public class AnwenderService {
 		try{
 			String query;
 			if(name!=null){
-				query = "SELECT * FROM KUENSTLER JOIN PREMIUMNUTZER P on KUENSTLER.Mail = P.Mail JOIN NUTZER N on P.Mail = N.Mail WHERE Kuenstlername == ?";
+				query = "SELECT * FROM KUENSTLER JOIN PREMIUMNUTZER P on KUENSTLER.Mail = P.Mail JOIN NUTZER N on P.Mail = N.Mail WHERE Kuenstlername = ?";
 			}
 			else{
 				query = "SELECT * FROM KUENSTLER JOIN PREMIUMNUTZER P on KUENSTLER.Mail = P.Mail JOIN NUTZER N on P.Mail = N.Mail";
@@ -218,7 +218,7 @@ public class AnwenderService {
 			String query;
 			String duration = "";
 			if(dauer!=-1){
-				duration = String.format("%02d:%02d:%02d", dauer / 3600, (dauer % 3600) / 60, dauer % 60);//LocalTime.ofSecondOfDay(dauer);//new SimpleDateFormat("HH/mm/ss").format(new Date(dauer));
+				duration = String.format("%02d:%02d:%02d", dauer / 3600, (dauer % 3600) / 60, dauer % 60);
 				if(bezeichnung!=null){
 					query = "SELECT * FROM TITEL WHERE DAUER >= ? AND Benennung == ?";
 				}
@@ -360,7 +360,7 @@ public class AnwenderService {
 				return Response.status(Response.Status.NOT_FOUND).entity(entity).build();
 			}
 			else {
-				return resultAsResponse(resultSet,true);
+				return resultAsResponseVierNullVier(resultSet);
 			}
 		}
 		catch (Exception e){

@@ -1,0 +1,25 @@
+//Anwender
+curl -i -X GET localhost:8080/nutzer?email=thedonald@foxnews.com
+curl -i -X POST -F email=mail1@gmail.com -F passwort=A12cAB -F benutzername=user1 localhost:8080/nutzer
+curl -i -X GET localhost:8080/premiumnutzer?abgelaufen=false
+curl -i -X POST -F ablaufdatum=01-01-1970 -F email=mail2@gmail.com -F passwort=A21cAB -F benutzername=user2 localhost:8080/premiumnutzer
+curl -i -X GET localhost:8080/kuenstler?kuenstlername=Bojo
+curl -i -X POST -F kuenstlername=kuenstler1 -F ablaufdatum=01-01-1970 -F email=mail3@gmail.com -F passwort=A21dAB -F benutzername=user3 localhost:8080/kuenstler
+curl -i -X GET "localhost:8080/alben?trackanzahl=4&bezeichnung=Brexit"
+curl -i -X GET localhost:8080/genres?bezeichnung=Rock
+curl -i -X GET "localhost:8080/titel?dauer=60&bezeichnung=American%20Idiot"
+curl -i -X GET "localhost:8080/playlists?ist_privat=false&bezeichnung=Politics"
+curl -i -X GET localhost:8080/titel/7/kommentare
+curl -i -X GET "localhost:8080/bands?name=Mustermeier&geschichte=Zwei%20Schulfreunde%20aus%20Duesseldorf,%20verbunden%20durch%20ihre%20Liebe%20zur%20Musik."
+//Kuenstler
+curl -i -X POST -u thedonald@foxnews.com:C0vFefe -F bezeichnung=album1 -F erscheinungsjahr=1970 localhost:8080/alben
+curl -i -X POST -u thedonald@foxnews.com:C0vFefe -F bezeichnung=titel1 -F dauer=60 -F speicherort_lq=/lq.mp3 -F speicherort_hq=/hq.wav localhost:8080/titel
+curl -i -X POST -u thedonald@foxnews.com:C0vFefe -F name=band1 -F geschichte=geschichte1 localhost:8080/bands
+curl -i -X POST -u thedonald@foxnews.com:C0vFefe -F kuenstlerid=5 localhost:8080/bands/1/kuenstler
+curl -i -X DELETE -u thedonald@foxnews.com:C0vFefe localhost:8080/bands/2
+//Premiumnutzer
+curl -i -X POST -u borisjohnson@brexit.uk:Br3xIt -F bezeichnung=playlist1 -F ist_privat=false -F coverbild=/coverbild.png localhost:8080/playlists
+curl -i -X POST -u borisjohnson@brexit.uk:Br3xIt -F titel=4 localhost:8080/playlists/2/titel
+//Nutzer
+curl -i -X POST -u elonmusk@outlook.com:TesLa7 -F text=kommentar1 localhost:8080/titel/3/kommentare
+curl -i -X PATCH -u elonmusk@outlook.com:TesLa7 -F text=kommentar2 localhost:8080/kommentare/6

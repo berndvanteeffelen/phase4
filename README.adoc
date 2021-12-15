@@ -24,6 +24,8 @@ Die Datenbank muss in ```data``` liegen und den Namen ```database.db``` besitzen
 - https://eclipse-ee4j.github.io/jersey/[Jersey]
 - https://curl.haxx.se[cURL]
 
+## SQLite Version: 3.30.0
+
 ## Kritische Entscheidungen
 
 ...
