@@ -3,7 +3,7 @@ curl -i -X GET localhost:8080/nutzer?email=thedonald@foxnews.com
 curl -i -X POST -F email=mail1@gmail.com -F passwort=A12cAB -F benutzername=user1 localhost:8080/nutzer
 curl -i -X GET localhost:8080/premiumnutzer?abgelaufen=false
 curl -i -X POST -F ablaufdatum=01-01-1970 -F email=mail2@gmail.com -F passwort=A21cAB -F benutzername=user2 localhost:8080/premiumnutzer
-curl -i -X GET localhost:8080/kuenstler?kuenstlername=Bojo
+curl -i -X GET localhost:8080/kuenstler?kuenstlername=BoJo
 curl -i -X POST -F kuenstlername=kuenstler1 -F ablaufdatum=01-01-1970 -F email=mail3@gmail.com -F passwort=A21dAB -F benutzername=user3 localhost:8080/kuenstler
 curl -i -X GET "localhost:8080/alben?trackanzahl=4&bezeichnung=Brexit"
 curl -i -X GET localhost:8080/genres?bezeichnung=Rock
